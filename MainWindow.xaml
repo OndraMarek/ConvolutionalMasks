@@ -35,18 +35,31 @@
                 HorizontalAlignment="Center"
                 Margin="20"
                 Click="BtnApplyConvolution_Click"/>
+        <ComboBox Grid.Column="1"
+                  x:Name="CmbMasks"
+                  Width="180"
+                  Height="30"
+                  FontSize="14"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Margin="20,100,20,20">
+            <ComboBoxItem Content="Blur"/>
+            <ComboBoxItem Content="Sharpen"/>
+            <ComboBoxItem Content="Emboss"/>
+        </ComboBox>
 
-    <StackPanel Grid.Column="2" Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="Result" 
-                       FontWeight="Bold" 
-                       FontSize="16" 
-                       HorizontalAlignment="Center" 
-                       Margin="0,0,0,10"/>
-        <Image x:Name="ImgResult"
-                   Stretch="Uniform"
-                   MaxWidth="700"
-                   MaxHeight="700"
-                   HorizontalAlignment="Center"/>
-    </StackPanel>
+
+        <StackPanel Grid.Column="2" Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Result" 
+                           FontWeight="Bold" 
+                           FontSize="16" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,10"/>
+            <Image x:Name="ImgResult"
+                       Stretch="Uniform"
+                       MaxWidth="700"
+                       MaxHeight="700"
+                       HorizontalAlignment="Center"/>
+        </StackPanel>
     </Grid>
 </Window>

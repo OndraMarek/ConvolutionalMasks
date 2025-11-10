@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ConvolutionalMasks.Filters;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace ConvolutionalMasks
@@ -12,12 +13,6 @@ namespace ConvolutionalMasks
         private int width, height, stride, bytesPerPixel;
         private System.Windows.Media.PixelFormat format;
         private double dpiX, dpiY;
-
-        private double[,] kernel = {
-                { 0.0625, 0.125, 0.0625 },
-                { 0.125, 0.25, 0.125 },
-                { 0.0625, 0.125, 0.0625 }
-            };
 
         public MainWindow()
         {
@@ -46,26 +41,18 @@ namespace ConvolutionalMasks
 
         private void BtnApplyConvolution_Click(object sender, RoutedEventArgs e)
         {
-            ApplyConvolutionToImage(kernel);
+            
+            ApplyConvolutionToImage(Kernels.Emboss);
         }
 
         private void ApplyConvolutionToImage(double[,] kernel)
         {
-            double factor = GetFactor(kernel);
+            double factor = Kernels.GetFactor(kernel);
 
             byte[] resultPixels = ApplyConvolution(pixelData, width, height, stride, bytesPerPixel, kernel, factor);
 
             WriteableBitmap result = CreateImageFromPixels(resultPixels, width, height, stride, format, dpiX, dpiY);
             ImgResult.Source = result;
-        }
-
-        private double GetFactor(double[,] kernel)
-        {
-            double kernelSum = 0.0;
-            for (int i = 0; i < this.kernel.GetLength(0); i++)
-                for (int j = 0; j < this.kernel.GetLength(1); j++)
-                    kernelSum += this.kernel[i, j];
-            return kernelSum != 0.0 ? 1.0 / kernelSum : 1.0;
         }
 
         private static byte[] ApplyConvolution(byte[] pixelData, int width, int height, int stride, int bytesPerPixel,
