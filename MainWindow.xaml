@@ -65,6 +65,9 @@
                 <ComboBoxItem Content="Blur"/>
                 <ComboBoxItem Content="Sharpen"/>
                 <ComboBoxItem Content="Emboss"/>
+                <ComboBoxItem Content="Custom1"/>
+                <ComboBoxItem Content="Custom2"/>
+                <ComboBoxItem Content="Custom3"/>
             </ComboBox>
         </StackPanel>
 

@@ -70,6 +70,9 @@ namespace ConvolutionalMasks
                 "Blur" => Kernels.Blur,
                 "Sharpen" => Kernels.Sharpen,
                 "Emboss" => Kernels.Emboss,
+                "Custom1" => Kernels.Custom1,
+                "Custom2" => Kernels.Custom2,
+                "Custom3" => Kernels.Custom3,
                 _ => null
             };
 
