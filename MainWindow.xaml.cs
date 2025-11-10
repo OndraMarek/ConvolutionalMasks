@@ -1,12 +1,13 @@
 ﻿using ConvolutionalMasks.Filters;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace ConvolutionalMasks
 {
     public partial class MainWindow : Window
     {
-        private static readonly Uri uri = new("/images/homer.jpg", UriKind.Relative);
+        private static readonly Uri uri = new("/images/flower.jpg", UriKind.Relative);
         private readonly BitmapImage bitmap = new(uri);
 
         private byte[] pixelData;
@@ -41,8 +42,25 @@ namespace ConvolutionalMasks
 
         private void BtnApplyConvolution_Click(object sender, RoutedEventArgs e)
         {
-            
-            ApplyConvolutionToImage(Kernels.Emboss);
+            if(CmbMasks.SelectedItem is not ComboBoxItem selectedItem)
+                return;
+
+            string value = selectedItem.Content.ToString() ?? string.Empty;
+
+            switch (value)
+            {
+                case "Blur":
+                    ApplyConvolutionToImage(Kernels.Blur);
+                    break;
+                case "Sharpen":
+                     ApplyConvolutionToImage(Kernels.Sharpen);
+                     break;
+                case "Emboss":
+                     ApplyConvolutionToImage(Kernels.Emboss);
+                     break;
+                default:
+                     break;
+                }
         }
 
         private void ApplyConvolutionToImage(double[,] kernel)

@@ -42,7 +42,8 @@
                   FontSize="14"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Center"
-                  Margin="20,100,20,20">
+                  Margin="20,100,20,20"
+                  SelectedValuePath="Content">
             <ComboBoxItem Content="Blur"/>
             <ComboBoxItem Content="Sharpen"/>
             <ComboBoxItem Content="Emboss"/>
