@@ -7,9 +7,7 @@ namespace ConvolutionalMasks
 {
     public partial class MainWindow : Window
     {
-        private static readonly Uri uri = new("/images/flower.jpg", UriKind.Relative);
-        private readonly BitmapImage bitmap = new(uri);
-
+        private BitmapImage bitmap;
         private byte[] pixelData;
         private int width, height, stride, bytesPerPixel;
         private System.Windows.Media.PixelFormat format;
@@ -18,12 +16,14 @@ namespace ConvolutionalMasks
         public MainWindow()
         {
             InitializeComponent();
-            LoadOriginalImage();
-            LoadImageData();
+            DisplayImage("/images/homer.jpg");
         }
-        private void LoadOriginalImage()
+
+        private void DisplayImage(string relativePath)
         {
+            bitmap = new BitmapImage(new Uri(relativePath, UriKind.Relative));
             ImgOriginal.Source = bitmap;
+            LoadImageData();
         }
 
         private void LoadImageData()
@@ -40,41 +40,53 @@ namespace ConvolutionalMasks
             dpiY = source.DpiY;
         }
 
-        private void BtnApplyConvolution_Click(object sender, RoutedEventArgs e)
+        private void BtnDisplayImage_Click(object sender, RoutedEventArgs e)
         {
-            if(CmbMasks.SelectedItem is not ComboBoxItem selectedItem)
+            if (CmbImages.SelectedItem is not ComboBoxItem selectedItem)
                 return;
 
             string value = selectedItem.Content.ToString() ?? string.Empty;
 
-            switch (value)
+            string path = value switch
             {
-                case "Blur":
-                    ApplyConvolutionToImage(Kernels.Blur);
-                    break;
-                case "Sharpen":
-                     ApplyConvolutionToImage(Kernels.Sharpen);
-                     break;
-                case "Emboss":
-                     ApplyConvolutionToImage(Kernels.Emboss);
-                     break;
-                default:
-                     break;
-                }
+                "Homer" => "/images/homer.jpg",
+                "Cat" => "/images/cat.jpg",
+                "Flowers" => "/images/flowers.jpg",
+                _ => "/images/flower.jpg"
+            };
+
+            DisplayImage(path);
+        }
+
+        private void BtnApplyConvolution_Click(object sender, RoutedEventArgs e)
+        {
+            if (CmbMasks.SelectedItem is not ComboBoxItem selectedItem)
+                return;
+
+            string value = selectedItem.Content.ToString() ?? string.Empty;
+
+            double[,]? kernel = value switch
+            {
+                "Blur" => Kernels.Blur,
+                "Sharpen" => Kernels.Sharpen,
+                "Emboss" => Kernels.Emboss,
+                _ => null
+            };
+
+            if (kernel is not null)
+                ApplyConvolutionToImage(kernel);
         }
 
         private void ApplyConvolutionToImage(double[,] kernel)
         {
             double factor = Kernels.GetFactor(kernel);
-
             byte[] resultPixels = ApplyConvolution(pixelData, width, height, stride, bytesPerPixel, kernel, factor);
-
             WriteableBitmap result = CreateImageFromPixels(resultPixels, width, height, stride, format, dpiX, dpiY);
             ImgResult.Source = result;
         }
 
         private static byte[] ApplyConvolution(byte[] pixelData, int width, int height, int stride, int bytesPerPixel,
-                                double[,] kernel, double factor)
+                                               double[,] kernel, double factor)
         {
             byte[] resultPixels = new byte[pixelData.Length];
 
@@ -105,13 +117,14 @@ namespace ConvolutionalMasks
                     resultPixels[resultIndex + 3] = 255;
                 }
             }
+
             return resultPixels;
         }
 
         private static WriteableBitmap CreateImageFromPixels(byte[] pixelData, int width, int height, int stride,
                                               System.Windows.Media.PixelFormat format, double dpiX, double dpiY)
         {
-            WriteableBitmap bmp = new WriteableBitmap(width, height, dpiX, dpiY, format, null);
+            WriteableBitmap bmp = new(width, height, dpiX, dpiY, format, null);
             bmp.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
             return bmp;
         }

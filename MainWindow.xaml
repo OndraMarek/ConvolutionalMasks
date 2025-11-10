@@ -14,7 +14,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="Original" 
+            <TextBlock Text="Original" 
                        FontWeight="Bold" 
                        FontSize="16" 
                        HorizontalAlignment="Center" 
@@ -25,42 +25,60 @@
                    Margin="5"/>
         </StackPanel>
 
-        <Button Grid.Column="1"
-                Content="Apply Convolutional Mask"
-                Width="180"
-                Height="50"
-                FontSize="14"
-                FontWeight="SemiBold"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Margin="20"
-                Click="BtnApplyConvolution_Click"/>
-        <ComboBox Grid.Column="1"
-                  x:Name="CmbMasks"
-                  Width="180"
-                  Height="30"
-                  FontSize="14"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Center"
-                  Margin="20,100,20,20"
-                  SelectedValuePath="Content">
-            <ComboBoxItem Content="Blur"/>
-            <ComboBoxItem Content="Sharpen"/>
-            <ComboBoxItem Content="Emboss"/>
-        </ComboBox>
+        <StackPanel Grid.Column="1"
+                    Width="220"
+                    Margin="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Orientation="Vertical">
+            <Button Content="Display image"
+                    Width="180"
+                    Height="50"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Margin="0,0,0,10"
+                    Click="BtnDisplayImage_Click"/>
+            <ComboBox x:Name="CmbImages"
+                      Width="180"
+                      Height="30"
+                      FontSize="14"
+                      Margin="0,0,0,20"
+                      SelectedValuePath="Content">
+                <ComboBoxItem Content="Homer"/>
+                <ComboBoxItem Content="Cat"/>
+                <ComboBoxItem Content="Flowers"/>
+            </ComboBox>
 
+            <Button Content="Apply Convolutional Mask"
+                    Width="180"
+                    Height="50"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Margin="0,0,0,10"
+                    Click="BtnApplyConvolution_Click"/>
+            <ComboBox x:Name="CmbMasks"
+                      Width="180"
+                      Height="30"
+                      FontSize="14"
+                      Margin="0,0,0,0"
+                      SelectedValuePath="Content">
+                <ComboBoxItem Content="Blur"/>
+                <ComboBoxItem Content="Sharpen"/>
+                <ComboBoxItem Content="Emboss"/>
+            </ComboBox>
+        </StackPanel>
 
         <StackPanel Grid.Column="2" Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Result" 
-                           FontWeight="Bold" 
-                           FontSize="16" 
-                           HorizontalAlignment="Center" 
-                           Margin="0,0,0,10"/>
+                       FontWeight="Bold" 
+                       FontSize="16" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,10"/>
             <Image x:Name="ImgResult"
-                       Stretch="Uniform"
-                       MaxWidth="700"
-                       MaxHeight="700"
-                       HorizontalAlignment="Center"/>
+                   Stretch="Uniform"
+                   MaxWidth="700"
+                   MaxHeight="700"
+                   HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Window>
