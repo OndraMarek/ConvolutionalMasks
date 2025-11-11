@@ -7,8 +7,8 @@ namespace ConvolutionalMasks
 {
     public partial class MainWindow : Window
     {
-        private BitmapImage bitmap;
-        private byte[] pixelData;
+        private BitmapImage? bitmap;
+        private byte[] pixelData = [];
         private int width, height, stride, bytesPerPixel;
         private System.Windows.Media.PixelFormat format;
         private double dpiX, dpiY;
@@ -16,7 +16,6 @@ namespace ConvolutionalMasks
         public MainWindow()
         {
             InitializeComponent();
-            DisplayImage("/images/homer.jpg");
         }
 
         private void DisplayImage(string relativePath)
