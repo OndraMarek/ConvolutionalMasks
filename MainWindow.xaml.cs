@@ -101,7 +101,7 @@ namespace ConvolutionalMasks
 
             int channelsToProcess = (bytesPerPixel == 4) ? 3 : bytesPerPixel;
 
-            for(int y = radiusY; y < height - radiusY; y++)
+            for (int y = radiusY; y < height - radiusY; y++)
             {
                 for (int x = radiusX; x < width - radiusX; x++)
                 {
@@ -127,7 +127,7 @@ namespace ConvolutionalMasks
                         resultPixels[resultIndex] = (byte)Math.Clamp(sum * factor, 0, 255);
                     }
                 }
-            });
+            };
 
             return resultPixels;
         }
