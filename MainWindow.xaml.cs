@@ -16,6 +16,7 @@ namespace ConvolutionalMasks
         public MainWindow()
         {
             InitializeComponent();
+            DisplayImage("/images/homer.jpg");
         }
 
         private void DisplayImage(string relativePath)
@@ -88,37 +89,45 @@ namespace ConvolutionalMasks
         }
 
         private static byte[] ApplyConvolution(byte[] pixelData, int width, int height, int stride, int bytesPerPixel,
-                                               double[,] kernel, double factor)
+                                       double[,] kernel, double factor)
         {
             byte[] resultPixels = new byte[pixelData.Length];
+            Array.Copy(pixelData, resultPixels, pixelData.Length);
 
-            for (int y = 1; y < height - 1; y++)
+            int kernelWidth = kernel.GetLength(1);
+            int kernelHeight = kernel.GetLength(0);
+            int radiusX = kernelWidth / 2;
+            int radiusY = kernelHeight / 2;
+
+            int channelsToProcess = (bytesPerPixel == 4) ? 3 : bytesPerPixel;
+
+            for(int y = radiusY; y < height - radiusY; y++)
             {
-                for (int x = 1; x < width - 1; x++)
+                for (int x = radiusX; x < width - radiusX; x++)
                 {
-                    double r = 0, g = 0, b = 0;
-
-                    for (int ky = -1; ky <= 1; ky++)
+                    for (int c = 0; c < channelsToProcess; c++)
                     {
-                        for (int kx = -1; kx <= 1; kx++)
+                        double sum = 0;
+
+                        for (int ky = 0; ky < kernelHeight; ky++)
                         {
-                            int pixelX = x + kx;
-                            int pixelY = y + ky;
-                            int pixelIndex = (pixelY * stride) + (pixelX * bytesPerPixel);
+                            for (int kx = 0; kx < kernelWidth; kx++)
+                            {
+                                int pixelX = x + (kx - radiusX);
+                                int pixelY = y + (ky - radiusY);
 
-                            b += pixelData[pixelIndex + 0] * kernel[ky + 1, kx + 1];
-                            g += pixelData[pixelIndex + 1] * kernel[ky + 1, kx + 1];
-                            r += pixelData[pixelIndex + 2] * kernel[ky + 1, kx + 1];
+                                int pixelIndex = (pixelY * stride) + (pixelX * bytesPerPixel) + c;
+
+                                sum += pixelData[pixelIndex] * kernel[ky, kx];
+                            }
                         }
-                    }
 
-                    int resultIndex = (y * stride) + (x * bytesPerPixel);
-                    resultPixels[resultIndex + 0] = (byte)Math.Clamp(b * factor, 0, 255);
-                    resultPixels[resultIndex + 1] = (byte)Math.Clamp(g * factor, 0, 255);
-                    resultPixels[resultIndex + 2] = (byte)Math.Clamp(r * factor, 0, 255);
-                    resultPixels[resultIndex + 3] = 255;
+                        int resultIndex = (y * stride) + (x * bytesPerPixel) + c;
+
+                        resultPixels[resultIndex] = (byte)Math.Clamp(sum * factor, 0, 255);
+                    }
                 }
-            }
+            });
 
             return resultPixels;
         }
@@ -129,6 +138,11 @@ namespace ConvolutionalMasks
             WriteableBitmap bmp = new(width, height, dpiX, dpiY, format, null);
             bmp.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
             return bmp;
+        }
+
+        private void BtnExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
