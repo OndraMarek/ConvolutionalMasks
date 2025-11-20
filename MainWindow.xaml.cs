@@ -99,35 +99,35 @@ namespace ConvolutionalMasks
             int radiusX = kernelWidth / 2;
             int radiusY = kernelHeight / 2;
 
-            int channelsToProcess = (bytesPerPixel == 4) ? 3 : bytesPerPixel;
-
             for (int y = radiusY; y < height - radiusY; y++)
             {
                 for (int x = radiusX; x < width - radiusX; x++)
                 {
-                    for (int c = 0; c < channelsToProcess; c++)
+                    double accumulatorB = 0, accumulatorG = 0, accumulatorR = 0;
+
+                    for (int ky = 0; ky < kernelHeight; ky++)
                     {
-                        double sum = 0;
-
-                        for (int ky = 0; ky < kernelHeight; ky++)
+                        for (int kx = 0; kx < kernelWidth; kx++)
                         {
-                            for (int kx = 0; kx < kernelWidth; kx++)
-                            {
-                                int pixelX = x + (kx - radiusX);
-                                int pixelY = y + (ky - radiusY);
+                            int pixelX = x + (kx - radiusX);
+                            int pixelY = y + (ky - radiusY);
+                            int offset = pixelY * stride + pixelX * bytesPerPixel;
 
-                                int pixelIndex = (pixelY * stride) + (pixelX * bytesPerPixel) + c;
+                            double weight = kernel[ky, kx];
 
-                                sum += pixelData[pixelIndex] * kernel[ky, kx];
-                            }
+                            accumulatorB += pixelData[offset + 0] * weight;
+                            accumulatorG += pixelData[offset + 1] * weight;
+                            accumulatorR += pixelData[offset + 2] * weight;
                         }
-
-                        int resultIndex = (y * stride) + (x * bytesPerPixel) + c;
-
-                        resultPixels[resultIndex] = (byte)Math.Clamp(sum * factor, 0, 255);
                     }
+
+                    int resultOffset = y * stride + x * 4;
+
+                    resultPixels[resultOffset + 0] = (byte)Math.Clamp(accumulatorB * factor, 0, 255);
+                    resultPixels[resultOffset + 1] = (byte)Math.Clamp(accumulatorG * factor, 0, 255);
+                    resultPixels[resultOffset + 2] = (byte)Math.Clamp(accumulatorR * factor, 0, 255);
                 }
-            };
+            }
 
             return resultPixels;
         }
